@@ -1,0 +1,48 @@
+<%= form_with url: update_multiple_products_taxon_admin_products_path, method: :put, data: { turbo: false } do |form| %>
+    <%@products.each do |pr|%>
+      <%= hidden_field_tag "product_ids[]", pr.id , id: "product_id_"+pr.id.to_s%>
+    <% end %>
+    <% Spree::Taxonomy.order(:id).each do |taxonomy| %>
+    <div class="h5"><strong><%= taxonomy.name %></strong></div>
+    <%# Оставил этот вариант #3 - тут есть иерархия%>
+    <% ordered_taxon = nested_set_options(taxonomy.taxons){ |i| "#{'-' * i.level} #{i.name} (#{i.products.count})" }%>
+    <%= form.collection_check_boxes :taxon_ids, ordered_taxon, :last, :first , multiple: true do |b|%>
+      <div class="form-check">
+        <%= b.label class: 'form-check-label' do %>
+          <%= b.check_box class: 'form-check-input' %>
+          <%= b.text  %>
+        <% end %>
+      </div>
+    <% end %>
+      <%# Этот вариант (#1) убрал - %>
+      <%# form.collection_check_boxes :taxon_ids, taxonomy.taxons.order(:id), :id, :pretty_name , multiple: true do |b|%>
+        <!-- <div class="form-check"> -->
+          <%# b.label class: 'form-check-label' do %>
+            <%# b.check_box class: 'form-check-input' %>
+            <%# b.text  %>
+          <%# end %>
+        <!-- </div> -->
+      <%# end %>
+
+      <%# #Этот вариант (#2) убрал - он немного в другом виде передавал данные. Но пригодится для чистых чекбоксов
+      <%# fields_for :taxon_ids do |f| %>
+        <%# taxonomy.taxons.each do |taxon| %>
+        <!-- <div class="form-check"> -->
+          <%# f.check_box taxon.id,  class: 'form-check-input'%>
+          <%# f.label taxon.pretty_name,  class: 'form-check-label'%>
+          <!-- </div> -->
+        <%# end %>
+      <%# end %>
+
+
+    <% end %>
+
+    <div class="form-actions" data-hook="buttons">
+        <%# button Spree.t('actions.update'), 'save.svg', 'submit', {class: 'btn-success', data: { disable_with: "#{ Spree.t(:saving) }..." }} %>
+        <%= submit_tag Spree.t('actions.update'), class: "btn btn-success" %>
+        <span class="or"><%= Spree.t(:or) %></span>
+        <%= button_link_to Spree.t('actions.cancel'), collection_url, icon: 'cancel.svg' %>
+    </div>
+
+
+<% end %>

@@ -16,6 +16,6 @@ Deface::Override.new(virtual_path: 'spree/admin/products/index',
 Deface::Override.new(virtual_path: 'spree/admin/shared/_content_header',
     name: 'add_admin_products_bulk_button',
     insert_before: "[data-hook='toolbar']",
-    partial: 'spree/admin/products/bulk_button',
+    partial: 'spree/admin/products/bulk_buttons',
     original: 'eb9ecf7015fa51bb0adf7dafd7e6fdf1d652027d',
     disabled: false)
