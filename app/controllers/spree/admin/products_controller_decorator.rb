@@ -48,8 +48,6 @@ module Spree
         redirect_to collection_url
       end
 
-
-      end
     end
   end
 end
