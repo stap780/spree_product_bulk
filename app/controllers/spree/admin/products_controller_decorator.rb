@@ -21,7 +21,7 @@ module Spree
       def edit_products_taxon #GET
         # puts params[:product_ids].present?
         if params[:product_ids].present?
-          @products = ::Spree::Product.find(params[:product_ids])
+          @products = ::Spree::Product.where(id: params[:product_ids])
           respond_to do |format|
             format.html
             format.js
