@@ -1,4 +1,4 @@
-<%= form_with url: update_multiple_products_taxon_admin_products_path, method: :put, data: { turbo: false } do |form| %>
+<%= form_with url: admin_products_update_products_taxon_path, method: :put, data: { turbo: false } do |form| %>
     <%@products.each do |pr|%>
       <%= hidden_field_tag "product_ids[]", pr.id , id: "product_id_"+pr.id.to_s%>
     <% end %>
