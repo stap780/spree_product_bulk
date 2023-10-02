@@ -3,19 +3,14 @@ module Spree
     module ProductsControllerDecorator
 
       def delete_selected
-        puts 'here'
-        puts params
+        puts 'here delete_selected params => '+params.to_s
         puts 'params[:product_ids] - ' + params[:product_ids].to_s
-        puts @object
         products = ::Spree::Product.where(id: params[:product_ids]) # friendly - только в товарах и наверно в taxon
         products.each do |product|
-          product.delete
+          product.destroy
         end
-        respond_to do |format|
-          format.html { redirect_to collection_url }
-          format.json { render json: { status: 'ok', message: 'Товары удалёны' } }
-          format.js { render nothing: true }
-        end
+        flash[:success] = Spree.t('notice_messages.product_deleted')
+        redirect_to collection_url
       end
 
       def edit_products_taxon #GET
@@ -27,7 +22,7 @@ module Spree
             format.js
           end
         else
-          redirect_to products_url
+          redirect_to collection_url
         end
       end
 

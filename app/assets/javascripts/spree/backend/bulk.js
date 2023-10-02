@@ -1,4 +1,6 @@
-$(document).ready(function() {
+document.addEventListener("spree:load", function() {
+    console.log('bulk load');
+
     $('#selectAll').click(function() {
       if (this.checked) {
         $(':checkbox').each(function() {
@@ -39,6 +41,5 @@ $(document).ready(function() {
       });
     });
   
-  
-  
-  });
+
+})

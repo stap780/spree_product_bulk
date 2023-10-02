@@ -3,6 +3,10 @@ module SpreeProductBulk
     class InstallGenerator < Rails::Generators::Base
       class_option :migrate, type: :boolean, default: true
 
+      def add_javascripts
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/bulk\n"
+      end
+
       def add_migrations
         run 'bundle exec rake railties:install:migrations FROM=spree_product_bulk'
       end
