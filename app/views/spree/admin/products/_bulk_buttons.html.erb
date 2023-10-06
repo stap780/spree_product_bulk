@@ -2,8 +2,8 @@
     <%# f.button type: :submit, class: "btn-success" do %>
     <%# end %>
 <%# end %>
-
-  <%= form_with url: admin_products_delete_selected_path, method: :post do |f| %>
+<%if @products.present? %>
+  <%= form_with url: admin_products_delete_selected_path, method: :post, data: { turbo: false } do |f| %>
     <%= f.hidden_field :product_ids, class: 'bulk_product_ids'  %>
     <%= f.submit "Delete selected", class: 'btn btn-secondary', id: 'deleteAll' %>
   <% end %>
@@ -12,3 +12,4 @@
     <%= f.submit "Update taxon", class: 'btn btn-secondary', id: 'updateTaxon' %>
   <% end %>
   <%# link_to 'Update taxon', admin_products_edit_products_taxon_path, class: 'btn btn-secondary', id: 'updateTaxon' %>
+<% end %>

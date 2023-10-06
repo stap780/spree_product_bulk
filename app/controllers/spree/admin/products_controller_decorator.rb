@@ -4,14 +4,22 @@ module Spree
 
       def delete_selected
         puts 'here delete_selected params => '+params.to_s
-        puts 'params[:product_ids] - ' + params[:product_ids].to_s
-        products = ::Spree::Product.where(id: params[:product_ids]) # friendly - только в товарах и наверно в taxon
-        products.each do |product|
-          product.destroy
+        # puts 'params[:product_ids] - ' + params[:product_ids].to_s
+        products = Spree::Product.where(id: params[:product_ids].split(',')) # friendly - только в товарах и наверно в taxon
+        # puts "##########"
+        # puts products.size
+        # puts "##########"
+        if  products.size > 0
+          products.each do |product|
+            product.destroy
+          end
+          flash[:success] = Spree.t('notice_messages.product_deleted')
+          redirect_to collection_url
+        else
+          flash[:notice] = 'select products'
+          redirect_to collection_url
         end
-        flash[:success] = Spree.t('notice_messages.product_deleted')
-        redirect_to collection_url
-      end
+    end
 
       def edit_products_taxon #GET
         # puts params[:product_ids].present?
