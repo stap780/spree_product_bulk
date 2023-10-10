@@ -1,15 +1,18 @@
-<%# form_with url: admin_products_bulk_delete_path, method: :post, id: :bulk_delete_form  do |f| %>
-    <%# f.button type: :submit, class: "btn-success" do %>
-    <%# end %>
-<%# end %>
 <%if @products.present? %>
+  <%= form_with url: admin_products_bulk_export_path, method: :post, data: { turbo: false } do |f| %>
+    <%= f.hidden_field :product_ids, class: 'bulk_product_ids'  %>
+    <%= f.submit "Export CSV", class: 'btn btn-secondary', id: 'bulkExport' %>
+  <% end %>
+  <%= form_with url: admin_products_bulk_set_active_path, method: :put, data: { turbo: false } do |f| %>
+    <%= f.hidden_field :product_ids, class: 'bulk_product_ids'  %>
+    <%= f.submit "Set active", class: 'btn btn-secondary', id: 'setActive' %>
+  <% end %>
   <%= form_with url: admin_products_delete_selected_path, method: :post, data: { turbo: false } do |f| %>
     <%= f.hidden_field :product_ids, class: 'bulk_product_ids'  %>
-    <%= f.submit "Delete selected", class: 'btn btn-secondary', id: 'deleteAll' %>
+    <%= f.submit "Delete selected", class: 'btn btn-secondary', id: 'deleteAll',data: { confirm: "Are you sure you want to delete selected?" } %>
   <% end %>
   <%= form_with url: admin_products_edit_products_taxon_path, method: :post, data: { turbo: false } do |f| %>
     <%= f.hidden_field :product_ids, class: 'bulk_product_ids'  %>
     <%= f.submit "Update taxon", class: 'btn btn-secondary', id: 'updateTaxon' %>
   <% end %>
-  <%# link_to 'Update taxon', admin_products_edit_products_taxon_path, class: 'btn btn-secondary', id: 'updateTaxon' %>
 <% end %>
