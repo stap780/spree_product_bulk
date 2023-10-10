@@ -4,7 +4,7 @@ module SpreeProductBulk
       class_option :migrate, type: :boolean, default: true
 
       def add_javascripts
-        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/bulk"
+        append_file 'vendor/assets/javascripts/spree/backend/all.js', "//= require spree/backend/bulk\n"
       end
 
       def add_migrations
