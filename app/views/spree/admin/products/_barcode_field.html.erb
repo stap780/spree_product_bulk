@@ -1,0 +1,6 @@
+<div data-hook="admin_product_form_barcode">
+<%= f.field_container :master_barcode do %>
+    <%= f.label :master_barcode, Spree.t(:master_barcode) %>
+    <%= f.text_field :barcode, size: 16, class: 'form-control' %>
+<% end %>
+</div>

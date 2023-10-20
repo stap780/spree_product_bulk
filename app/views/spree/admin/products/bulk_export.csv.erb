@@ -1,5 +1,5 @@
-<%- headers = ['Var id','is master?','Name','Sku', 'Desc','Price','Quantity'] -%>
+<%- headers = ['Var id','is master?','Name','Sku', 'Desc','Price','Quantity','Barcode'] -%>
 <%= CSV.generate_line headers %>
 <%- @variants.each do |variant| -%>
-  <%= CSV.generate_line([variant.id,variant.is_master.to_s, variant.product.name, variant.sku, variant.product.description, variant.price.to_i, variant.stock_items.present? ? variant.stock_items.first.count_on_hand : '' ]).html_safe -%>
+  <%= CSV.generate_line([variant.id,variant.is_master.to_s, variant.product.name, variant.sku, variant.product.description, variant.price.to_i, variant.stock_items.present? ? variant.stock_items.first.count_on_hand : '' , variant.barcode.to_s]).html_safe -%>
 <%- end -%>
