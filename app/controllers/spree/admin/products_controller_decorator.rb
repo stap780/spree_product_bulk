@@ -84,6 +84,54 @@ module Spree
           @variants = Spree::Variant.all.order(:id)
         end
 
+        # header1 = ['Var id','is master?','Name','Sku','Desc','Price','Quantity','Barcode']
+        header1 = Spree::Product.column_names.map{|p| "Product:"+p}
+        header2 = Spree::Variant.column_names.map{|p| "Variant:"+p}+["Variant:price","Variant:quantity"]
+        header3 = Spree::Property.all.present? ? Spree::Property.all.map{|p| "Property:"+p.name} : []
+        header4 = Spree::OptionType.all.present? ? Spree::OptionType.all.map{|p| "OptionType:"+p.name} : []
+        @full_header = header1.uniq+header2.uniq+header3.uniq+header4.uniq
+
+
+        attrs_for_sheet = []
+        @variants.each do |variant|
+          puts "variant id --- "+variant.id.to_s
+          product = variant.product ? variant.product : Product.new
+          attr_for_sheet_product = JSON.parse( product.to_json ).transform_keys{ |key| "Product:"+key.to_s }
+          # => {"Product:id"=>233,"Product:name"=>nil,"Product:description"=>nil}
+          attr_for_sheet_variant = JSON.parse( variant.to_json ).transform_keys{ |key| "Variant:"+key.to_s }
+          attr_for_sheet_prop = Hash.new
+          if variant.product && variant.product.product_properties
+            variant.product.product_properties.pluck(:property_id, :value).each do |prop|
+              prop_name = Spree::Property.find_by_id(prop[0]).name
+              prop_value = prop[1]
+              attr_for_sheet_prop["Property:"+prop_name] = prop_value
+            end
+          end
+          attr_for_sheet_option = Hash.new
+          if variant.option_values
+            variant.option_values.each do |option_value|
+              opt_name = option_value.option_type.name
+              opt_value = option_value.name
+              attr_for_sheet_option["OptionType:"+opt_name] = opt_value
+            end
+          end
+          quantity =  variant.stock_items.present? ? variant.stock_items.first.count_on_hand : ''
+          attr_for_sheet_variant_extra = {"Variant:price" => variant.price.to_i, "Variant:quantity" => quantity }
+          attrs_for_sheet.push( attr_for_sheet_product.merge(attr_for_sheet_variant).merge(attr_for_sheet_variant_extra).merge(attr_for_sheet_prop).merge(attr_for_sheet_option) )
+        end
+
+        @attrs_for_sheet = attrs_for_sheet.flatten
+        
+        respond_to do |format|
+          format.html
+          format.csv do
+            response.headers['Content-Type'] = 'text/csv'
+            response.headers['Content-Disposition'] = "attachment; filename=products_bulk_export.csv"
+          end
+        end
+        
+      end
+
         respond_to do |format|
           format.html
           format.csv do
