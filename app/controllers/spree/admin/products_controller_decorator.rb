@@ -19,7 +19,7 @@ module Spree
           flash[:notice] = 'select products'
           redirect_to collection_url
         end
-    end
+      end
 
       def edit_products_taxon #GET
         # puts params[:product_ids].present?
@@ -122,16 +122,6 @@ module Spree
 
         @attrs_for_sheet = attrs_for_sheet.flatten
         
-        respond_to do |format|
-          format.html
-          format.csv do
-            response.headers['Content-Type'] = 'text/csv'
-            response.headers['Content-Disposition'] = "attachment; filename=products_bulk_export.csv"
-          end
-        end
-        
-      end
-
         respond_to do |format|
           format.html
           format.csv do
