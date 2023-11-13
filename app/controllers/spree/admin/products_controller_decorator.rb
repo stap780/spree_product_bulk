@@ -2,6 +2,7 @@ module Spree
   module Admin
     module ProductsControllerDecorator
       require 'csv'
+
       def delete_selected
         puts 'here delete_selected params => '+params.to_s
         # puts 'params[:product_ids] - ' + params[:product_ids].to_s
@@ -40,14 +41,6 @@ module Spree
         taxon_ids = params[:taxon_ids].reject!(&:blank?)
         # puts 'taxon_ids - ' + taxon_ids.to_s
         @products.each do |pr|
-          # new_taxons = []
-          # taxon_ids.each do |tx|
-          #   # puts tx.to_i
-          #   #new_taxons = !pr.taxon_ids.include?(tx.to_i) ? pr.taxon_ids.push(tx.to_i) : pr.taxon_ids
-          #   new_taxons.push(tx.to_i) if !pr.taxon_ids.include?(tx.to_i)
-          # end
-          # puts 'new_taxons - ' + new_taxons.uniq.to_s
-          # pr.update!(taxon_ids: new_taxons.uniq)
           pr.update!(taxon_ids: taxon_ids)
         end
         flash[:notice] = 'products taxon updated'
@@ -86,7 +79,7 @@ module Spree
 
         # header1 = ['Var id','is master?','Name','Sku','Desc','Price','Quantity','Barcode']
         header1 = Spree::Product.column_names.map{|p| "Product:"+p}
-        header2 = Spree::Variant.column_names.map{|p| "Variant:"+p}+["Variant:price","Variant:quantity"]
+        header2 = Spree::Variant.column_names.map{|p| "Variant:"+p}+["Variant:price","Variant:quantity","Variant:images"]
         header3 = Spree::Property.all.present? ? Spree::Property.all.map{|p| "Property:"+p.name} : []
         header4 = Spree::OptionType.all.present? ? Spree::OptionType.all.map{|p| "OptionType:"+p.name} : []
         @full_header = header1.uniq+header2.uniq+header3.uniq+header4.uniq
@@ -116,7 +109,13 @@ module Spree
             end
           end
           quantity =  variant.stock_items.present? ? variant.stock_items.first.count_on_hand : ''
-          attr_for_sheet_variant_extra = {"Variant:price" => variant.price.to_i, "Variant:quantity" => quantity }
+          images = []
+          variant.images.map do |image|
+            images.push(main_app.cdn_image_url(image.attachment))
+          end
+          image_urls = images.present? ? images.join(' ') : ' '
+          
+          attr_for_sheet_variant_extra = {"Variant:price" => variant.price.to_i, "Variant:quantity" => quantity, "Variant:images" => image_urls }
           attrs_for_sheet.push( attr_for_sheet_product.merge(attr_for_sheet_variant).merge(attr_for_sheet_variant_extra).merge(attr_for_sheet_prop).merge(attr_for_sheet_option) )
         end
 
