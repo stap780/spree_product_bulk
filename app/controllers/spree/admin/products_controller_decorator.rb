@@ -80,8 +80,8 @@ module Spree
         # header1 = ['Var id','is master?','Name','Sku','Desc','Price','Quantity','Barcode']
         header1 = Spree::Product.column_names.map{|p| "Product:"+p}
         header2 = Spree::Variant.column_names.map{|p| "Variant:"+p}+["Variant:price","Variant:quantity","Variant:images"]
-        header3 = Spree::Property.all.present? ? Spree::Property.all.map{|p| "Property:"+p.name} : []
-        header4 = Spree::OptionType.all.present? ? Spree::OptionType.all.map{|p| "OptionType:"+p.name} : []
+        header3 = Spree::Property.all.present? ? Spree::Property.all.map{|p| "Property:"+p.name.to_s} : []
+        header4 = Spree::OptionType.all.present? ? Spree::OptionType.all.map{|p| "OptionType:"+p.name.to_s} : []
         @full_header = header1.uniq+header2.uniq+header3.uniq+header4.uniq
 
 
